@@ -15,6 +15,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunSQL(
+            "CREATE EXTENSION IF NOT EXISTS postgis",
+            reverse_sql=migrations.RunSQL.noop,
+        ),
+        migrations.RunSQL(
+            "CREATE EXTENSION IF NOT EXISTS vector",
+            reverse_sql=migrations.RunSQL.noop,
+        ),
         migrations.CreateModel(
             name='Location',
             fields=[
