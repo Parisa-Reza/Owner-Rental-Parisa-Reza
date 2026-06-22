@@ -28,22 +28,36 @@ class Command(BaseCommand):
 
         counter = 0
 
+
         for _, row in df.iterrows():
             title = row.get('title')
             if not title:
                 continue
 
-            # Safely parse text decimals, defaulting to 0.0 if empty
+            # Pulling the unique location strings from the current CSV row
+            csv_loc_name = row.get('loc_name', 'Default Hub')
+            csv_city = row.get('loc_city', 'Unknown City')
+            csv_country = row.get('loc_country', 'Global')
+
+            # creating a dynamic Location row mapped specifically to this country
+            row_location, _ = Location.objects.get_or_create(
+                name=csv_loc_name,
+                defaults={
+                    'city': csv_city,
+                    'country': csv_country,
+                    'slug': slugify(csv_loc_name)
+                }
+            )
+
+            # Extract spatial coordinates
             lat = float(row.get('latitude', 0.0))
             lon = float(row.get('longitude', 0.0))
-            
-            # Formulate the explicit spatial geographic geometry object
             geo_point = Point(lon, lat, srid=4326)
 
             property_obj, created = Property.objects.get_or_create(
                 title=title,
                 defaults={
-                    'location': default_location,
+                    'location': row_location,  #  links to the dynamic country model row!
                     'slug': slugify(title),
                     'description': row.get('description', ''),
                     'property_type': row.get('property_type', 'Vacation Rental'),
@@ -60,4 +74,4 @@ class Command(BaseCommand):
             if created:
                 counter += 1
 
-        self.stdout.write(self.style.SUCCESS(f"Successfully processed CSV. Ingested {counter} entries via Pandas!"))
+        self.stdout.write(self.style.SUCCESS(f"Successfully processed CSV. Ingested {counter} global entries!"))

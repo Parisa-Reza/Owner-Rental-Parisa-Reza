@@ -34,8 +34,8 @@ class PropertyAdmin(admin.GISModelAdmin):  # GISModelAdmin enables visual intera
     )
     
     # Active sorting filters and analytical fields tracking lists
-    list_display = ('title', 'property_type', 'price', 'status', 'is_featured')
-    list_filter = ('property_type', 'status', 'is_featured', 'created_at')
+    list_display = ('title', 'property_type', 'price', 'status')
+    list_filter = ('property_type', 'status', 'created_at')
     search_fields = ('title', 'description', 'address')
     prepopulated_fields = {'slug': ('title',)}
     
