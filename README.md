@@ -1,8 +1,16 @@
 # Rental Owner
 
+## Description
+This project  built using Django, GeoDjango, PostGIS, and pgvector. It combines precise geographic location tracking with advanced AI-powered semantic search, allowing users to find properties based on both physical distance and conceptual meaning.The semantic search feature needs further enhancement.
 
 ##  Quick Preview
-
+<img width="1920" height="1080" alt="Screenshot from 2026-06-23 16-34-24" src="https://github.com/user-attachments/assets/2dc7633d-314d-4969-a2d3-5a8e8b89a6d2" />
+<img width="1920" height="1080" alt="Screenshot from 2026-06-23 15-27-43" src="https://github.com/user-attachments/assets/44121bdc-052f-475d-bb52-625e50be7012" />
+<img width="1920" height="1080" alt="Screenshot from 2026-06-23 16-34-48" src="https://github.com/user-attachments/assets/3ad685be-e73d-46e1-b0f4-91b2f848a9e1" />
+<img width="1920" height="1080" alt="Screenshot from 2026-06-23 16-34-57" src="https://github.com/user-attachments/assets/bac47d23-5789-49dd-adfb-84e890f85710" />
+<img width="1920" height="1080" alt="Screenshot from 2026-06-23 16-35-16" src="https://github.com/user-attachments/assets/84a9e8b5-49ee-4280-b3c4-1657fca58f9f" />
+<img width="1920" height="1080" alt="Screenshot from 2026-06-23 16-36-01" src="https://github.com/user-attachments/assets/65fcccbd-ac95-485f-aeca-8af40f038dff" />
+<img width="1920" height="1080" alt="Screenshot from 2026-06-23 16-36-11" src="https://github.com/user-attachments/assets/70e6197e-2c87-423f-becb-4c6d56026134" />
 
 
 
@@ -92,7 +100,7 @@ Build the environment and install all dependencies including AI/ML libraries (`p
 docker compose up -d --build
 ```
 
-> ⚠️ **First-run note:** The initial build may take **15–20 minutes** — Docker downloads large ML models and libraries. Do **not** interrupt this process.
+> **First-run note:** The initial build may take **15–20 minutes** — Docker downloads large ML models and libraries. Do **not** interrupt this process.
 
 ---
 
@@ -133,7 +141,13 @@ exit()
 
 
 ---
+###  Superuser creation
 
+
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+---
 ###  Import Data & Generate AI Embeddings
 
 Process your CSV, generate semantic vector embeddings for all locations, and populate the database:
@@ -147,7 +161,7 @@ docker compose exec web python manage.py import_properties rentals.csv
 
 ### Access the Application
 
-Your app is live! Open your browser:
+Open your browser:
 
 | Interface | URL |
 |---|---|
@@ -158,7 +172,7 @@ Your app is live! Open your browser:
 
 ## Future improvement
 
-- Enhance semantic search
+- Enhance semantic search feature
 
 
 
