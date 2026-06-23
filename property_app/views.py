@@ -6,6 +6,7 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.geos import Point
 from geopy.distance import geodesic 
 
+
 def home(request):
     # Fetch active geographic nodes 
     return render(request, 'property_app/home.html')
@@ -45,25 +46,6 @@ def property_listing(request):
 
     return render(request, 'property_app/listing.html', {'page_obj': page_obj})
 
-def property_detail(request, slug):
-    # Fetch listing along with its location field setup
-    property_obj = get_object_or_404(Property, slug=slug, is_active=True)
-    location_obj = property_obj.location
-    
-    # # Calculate real-world geodesic distance if both spatial points exist
-    # distance_km = None
-    # if property_obj.point and location_obj.point:
-    #     distance_meters = property_obj.point.distance(location_obj.point)
-    #     distance_km = round(distance_meters * 111.12, 2)  
-
-    # all_images = property_obj.images.all().order_by('-is_primary', 'sort_order')
-
-    # context = {
-    #     'property': property_obj,
-    #     'images': all_images,
-    #     'distance_from_hub': distance_km
-    # }
-    # return render(request, 'property_app/detail.html', context)
 
 def property_detail(request, slug):
     # Fetch listing along with its location field setup
@@ -71,10 +53,8 @@ def property_detail(request, slug):
     location_obj = property_obj.location
     
     distance_meters = None
-    
-    # Verify that both points exist and have coordinates
     if property_obj.point and location_obj.point:
-        # geopy expects coordinates in (latitude, longitude) format
+        # geopy expects coordinate sets in  (latitude, longitude) matrix
         property_coords = (property_obj.point.y, property_obj.point.x)
         location_coords = (location_obj.point.y, location_obj.point.x)
         
@@ -86,7 +66,6 @@ def property_detail(request, slug):
     context = {
         'property': property_obj,
         'images': all_images,
-        'distance_from_hub': distance_meters  # This passes the exact raw float value
+        'distance_from_hub': distance_meters 
     }
     return render(request, 'property_app/detail.html', context)
-

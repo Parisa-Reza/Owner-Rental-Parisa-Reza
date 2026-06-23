@@ -14,50 +14,42 @@ class Command(BaseCommand):
         csv_file_path = options['csv_file']
 
         try:
-            # Leverage Pandas loading engine matrices to map rows instantly
             df = pd.read_csv(csv_file_path)
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error reading target dataset file: {str(e)}"))
             return
 
-        # Ensure at least one default region exists to satisfy ForeignKey relationships
-        default_location, _ = Location.objects.get_or_create(
-            name="Primary Area Hub",
-            defaults={'city': 'Metropolis', 'country': 'Global', 'slug': 'primary-area-hub'}
-        )
-
         counter = 0
-
 
         for _, row in df.iterrows():
             title = row.get('title')
             if not title:
                 continue
 
-            # Pulling the unique location strings from the current CSV row
             csv_loc_name = row.get('loc_name', 'Default Hub')
             csv_city = row.get('loc_city', 'Unknown City')
             csv_country = row.get('loc_country', 'Global')
 
-            # creating a dynamic Location row mapped specifically to this country
-            row_location, _ = Location.objects.get_or_create(
-                name=csv_loc_name,
-                defaults={
-                    'city': csv_city,
-                    'country': csv_country,
-                    'slug': slugify(csv_loc_name)
-                }
-            )
-
-            # Extract spatial coordinates
+            # Extract spatial coordinates upfront
             lat = float(row.get('latitude', 0.0))
             lon = float(row.get('longitude', 0.0))
             geo_point = Point(lon, lat, srid=4326)
+            
+            # ⭐ FIX 1: Look up the Hub by City & Country to cluster them correctly
+            row_location, _ = Location.objects.get_or_create(
+                city=csv_city,
+                country=csv_country,
+                defaults={
+                    'name': csv_loc_name,
+                    'slug': slugify(csv_city),
+                    'point': geo_point  # ⭐ FIX 2: Set the point coordinate for distance metrics!
+                }
+            )
 
             property_obj, created = Property.objects.get_or_create(
                 title=title,
                 defaults={
-                    'location': row_location,  #  links to the dynamic country model row
+                    'location': row_location,
                     'slug': slugify(title),
                     'description': row.get('description', ''),
                     'property_type': row.get('property_type', 'Vacation Rental'),

@@ -5,3 +5,4 @@ pgvector
 pillow
 django-filter
 pandas
+geopy
