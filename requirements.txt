@@ -6,3 +6,5 @@ pillow
 django-filter
 pandas
 geopy
+sentence-transformers
+numpy

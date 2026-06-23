@@ -16,6 +16,16 @@ class Location(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) 
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        indexes = [
+            HnswIndex(
+                name="location_embedding_idx", 
+                fields=["embedding"], 
+                m=16, 
+                ef_construction=64, 
+                opclasses=["vector_cosine_ops"] # Compares vectors by meaning
+            )
+        ]
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
